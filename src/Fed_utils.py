@@ -11,12 +11,14 @@ from iCIFAR100 import iCIFAR100
 from torch.utils.data import DataLoader
 import random
 
+
 def setup_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
+
 
 def model_to_device(model, parallel, device):
     if parallel:
@@ -27,7 +29,10 @@ def model_to_device(model, parallel, device):
         model.to(card)
     return model
 
-def participant_exemplar_storing(clients, num, model_g, old_client, task_id, clients_index):
+
+def participant_exemplar_storing(
+    clients, num, model_g, old_client, task_id, clients_index
+):
     for index in range(num):
         clients[index].model = copy.deepcopy(model_g)
         if index not in clients_index:
@@ -36,6 +41,7 @@ def participant_exemplar_storing(clients, num, model_g, old_client, task_id, cli
             else:
                 clients[index].beforeTrain(task_id, 1)
             clients[index].update_new_set()
+
 
 def local_train(clients, index, model_g, task_id, model_old, ep_g, old_client):
     clients[index].model = copy.deepcopy(model_g)
@@ -51,9 +57,10 @@ def local_train(clients, index, model_g, task_id, model_old, ep_g, old_client):
     local_model = clients[index].model.state_dict()
     proto_grad = clients[index].proto_grad_sharing()
 
-    print('*' * 60)
+    print("*" * 60)
 
     return local_model, proto_grad
+
 
 def FedAvg(models):
     w_avg = copy.deepcopy(models[0])
@@ -62,6 +69,7 @@ def FedAvg(models):
             w_avg[k] += models[i][k]
         w_avg[k] = torch.div(w_avg[k], len(models))
     return w_avg
+
 
 def model_global_eval(model_g, test_dataset, task_id, task_size, device):
     model_to_device(model_g, False, device)
@@ -79,4 +87,3 @@ def model_global_eval(model_g, test_dataset, task_id, task_size, device):
     accuracy = 100 * correct / total
     model_g.train()
     return accuracy
-
