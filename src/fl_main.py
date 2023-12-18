@@ -10,6 +10,7 @@ from Fed_utils import *
 from ProxyServer import *
 from mini_imagenet import *
 from tiny_imagenet import *
+from OrganAMNIST import *
 from option import args_parser
 
 args = args_parser()
@@ -62,6 +63,12 @@ elif args.dataset == "tiny_imagenet":
     train_dataset.get_data()
     test_dataset = train_dataset
 
+elif args.dataset == "oamnist":
+    train_dataset = OAMnist("pmnist", transform=train_transform, download=True)
+    test_dataset = OAMnist(
+        "oamnist", test_transform=test_transform, split="test", download=True
+    )
+
 else:
     train_dataset = Mini_Imagenet(
         "./train", train_transform=train_transform, test_transform=test_transform
@@ -84,6 +91,7 @@ for i in range(125):
         train_dataset,
         args.device,
         encode_model,
+        args.iid_level,
     )
     models.append(model_temp)
 
