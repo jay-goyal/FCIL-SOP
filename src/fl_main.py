@@ -35,7 +35,6 @@ hidden = 768
 train_transform = transforms.Compose(
     [
         transforms.RandomCrop((args.img_size, args.img_size), padding=4),
-        transforms.RandomHorizontalFlip(p=0.5),
         transforms.ColorJitter(brightness=0.24705882352941178),
         transforms.ToTensor(),
         transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
