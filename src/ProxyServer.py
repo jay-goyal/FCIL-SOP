@@ -96,7 +96,7 @@ class proxyServer:
                     # print('reconstruct_{}, {}-th'.format(label_i, j))
                     grad_truth_temp = self.pool_grad[grad_index[0][j]]
 
-                    dummy_data = torch.randn((1, 3, 32, 32)).to(self.device).requires_grad_(True)
+                    dummy_data = torch.randn((1, 3, self.img_size, self.img_size)).to(self.device).requires_grad_(True)
                     label_pred = torch.Tensor([label_i]).long().to(self.device).requires_grad_(False)
 
                     optimizer = torch.optim.LBFGS([dummy_data, ], lr=0.1)
