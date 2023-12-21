@@ -15,7 +15,7 @@ from Fed_utils import *
 from proxy_data import *
 
 class proxyServer:
-    def __init__(self, device, learning_rate, numclass, feature_extractor, encode_model, test_transform):
+    def __init__(self, device, learning_rate, numclass, feature_extractor, encode_model, test_transform, img_size):
         super(proxyServer, self).__init__()
         self.Iteration = 250
         self.learning_rate = learning_rate
@@ -31,6 +31,7 @@ class proxyServer:
         self.best_model_1 = None
         self.best_model_2 = None
         self.best_perf = 0
+        self.img_size = img_size
 
     def dataloader(self, pool_grad):
         self.pool_grad = pool_grad
@@ -52,7 +53,7 @@ class proxyServer:
 
     def monitor(self):
         self.model.eval()
-        correct, total = 0, 0
+        correct, total = 0, 0.01
         for step, (imgs, labels) in enumerate(self.monitor_loader):
             imgs, labels = imgs.cuda(self.device), labels.cuda(self.device)
             with torch.no_grad():

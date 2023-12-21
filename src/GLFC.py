@@ -220,8 +220,7 @@ class GLFC_model:
 
         overall_avg = torch.mean(all_ent).item()
         print(overall_avg)
-        if overall_avg - self.last_entropy > 1.2:
-            res = True
+        res = True
 
         self.last_entropy = overall_avg
 

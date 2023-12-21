@@ -10,7 +10,7 @@ from Fed_utils import *
 from ProxyServer import *
 from mini_imagenet import *
 from tiny_imagenet import *
-from OrganAMNIST import *
+from OrganCMNIST import *
 from option import args_parser
 
 args = args_parser()
@@ -31,6 +31,7 @@ model_g = network(args.numclass, feature_extractor)
 model_g = model_to_device(model_g, False, args.device)
 model_old = None
 
+hidden = 768
 train_transform = transforms.Compose(
     [
         transforms.RandomCrop((args.img_size, args.img_size), padding=4),
@@ -63,11 +64,12 @@ elif args.dataset == "tiny_imagenet":
     train_dataset.get_data()
     test_dataset = train_dataset
 
-elif args.dataset == "oamnist":
-    train_dataset = OAMnist("pmnist", transform=train_transform, download=True)
-    test_dataset = OAMnist(
-        "oamnist", test_transform=test_transform, split="test", download=True
+elif args.dataset == "ocmnist":
+    train_dataset = OCMnist("ocmnist", transform=train_transform, download=True)
+    test_dataset = OCMnist(
+        "ocmnist", test_transform=test_transform, split="test", download=True
     )
+    hidden = 588
 
 else:
     train_dataset = Mini_Imagenet(
@@ -76,7 +78,7 @@ else:
     train_dataset.get_data()
     test_dataset = train_dataset
 
-encode_model = LeNet(num_classes=100)
+encode_model = LeNet(num_classes=args.tot_classes, hideen=hidden)
 encode_model.apply(weights_init)
 
 for i in range(125):
@@ -103,6 +105,7 @@ proxy_server = proxyServer(
     feature_extractor,
     encode_model,
     train_transform,
+    args.img_size
 )
 
 ## training log

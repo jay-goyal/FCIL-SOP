@@ -44,6 +44,6 @@ class Proxy_Data():
 
     def __len__(self):
         if self.TestData != []:
-            return self.TestData.shape[0]
+            return np.array(self.TestData).shape[0]
 
 
